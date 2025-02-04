@@ -1,53 +1,53 @@
-let researchData = {};
+let appData = {};
+const AGE_GROUP_REGEX = /(\d+)-(\d+)/;
 
-// Load data
-fetch('data/data.json')
-    .then(res => res.json())
-    .then(data => {
-        researchData = data;
-        initDashboard();
-        initSimulator();
-    });
+// Helper functions
+const getMaxKey = (obj) => Object.entries(obj).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+const parseAgeGroup = (group) => group.match(AGE_GROUP_REGEX)?.slice(1,3).map(Number) || [0,0];
 
-// Initialize dashboard
+// Initialize
+window.addEventListener('DOMContentLoaded', () => {
+    fetch('./data/data.json')
+        .then(res => {
+            if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            if (!data.clusters) throw new Error("Invalid data structure");
+            appData = data;
+            initDashboard();
+            initSimulator();
+        })
+        .catch(err => {
+            console.error("Error loading data:", err);
+            alert("Gagal memuat data! Lihat konsol untuk detail.");
+        });
+});
+
+// Dashboard
 function initDashboard() {
+    // Update total respondents
+    document.getElementById('totalResponden').textContent = appData.metadata.total_respondents;
+
     // Main pie chart
-    new Chart(document.getElementById('mainPieChart'), {
+    new Chart(document.getElementById('mainChart'), {
         type: 'pie',
         data: {
-            labels: researchData.clusters.map(c => `Klaster ${c.id}`),
+            labels: appData.clusters.map(c => `Klaster ${c.id}`),
             datasets: [{
-                data: researchData.clusters.map(c => c.percentage),
+                data: appData.clusters.map(c => c.percentage),
                 backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
             }]
         }
     });
 
-    // Populate summary table
-    const tableBody = document.querySelector('#summaryTable tbody');
-    researchData.clusters.forEach(cluster => {
-        const topAge = getMaxKey(cluster.age_distribution);
-        const topJob = getMaxKey(cluster.dominant_job);
-        const topMedia = getMaxKey(cluster.main_media);
-        
-        tableBody.innerHTML += `
-            <tr>
-                <td>Klaster ${cluster.id}</td>
-                <td>${topAge} (${cluster.age_distribution[topAge]}%)</td>
-                <td>${topJob} (${cluster.dominant_job[topJob]}%)</td>
-                <td>${topMedia} (${cluster.main_media[topMedia]}%)</td>
-                <td>${cluster.satisfaction}% Puas</td>
-            </tr>
-        `;
-    });
-
-    // Create cluster accordion
+    // Accordion
     const accordion = document.getElementById('clusterAccordion');
-    researchData.clusters.forEach((cluster, index) => {
-        accordion.innerHTML += `
+    appData.clusters.forEach((cluster, idx) => {
+        const html = `
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button ${index === 0 ? '' : 'collapsed'}" 
+                    <button class="accordion-button ${idx === 0 ? '' : 'collapsed'}" 
                             type="button" 
                             data-bs-toggle="collapse" 
                             data-bs-target="#cluster${cluster.id}">
@@ -55,46 +55,27 @@ function initDashboard() {
                     </button>
                 </h2>
                 <div id="cluster${cluster.id}" 
-                     class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" 
+                     class="accordion-collapse collapse ${idx === 0 ? 'show' : ''}" 
                      data-bs-parent="#clusterAccordion">
                     <div class="accordion-body">
                         <div class="row g-4">
-                            <!-- Age Distribution -->
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6>📈 Distribusi Usia</h6>
+                                        <h6>📊 Distribusi Usia</h6>
                                         <canvas id="ageChart${cluster.id}"></canvas>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Media Preference -->
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6>📱 Media Preferensi</h6>
-                                        <canvas id="mediaChart${cluster.id}"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Importance Factors -->
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h6>⚖️ Prioritas Informasi</h6>
+                                        <h6>📈 Prioritas Informasi</h6>
                                         ${Object.entries(cluster.importance).map(([key, val]) => `
                                             <div class="mb-3">
-                                                <small>${key.charAt(0).toUpperCase() + key.slice(1)}</small>
+                                                <small>${key.toUpperCase()}</small>
                                                 <div class="progress">
-                                                    <div class="progress-bar" 
-                                                         style="width: ${val}%"
-                                                         aria-valuenow="${val}" 
-                                                         aria-valuemin="0" 
-                                                         aria-valuemax="100">
-                                                        ${val}%
-                                                    </div>
+                                                    <div class="progress-bar" style="width: ${val}%">${val}%</div>
                                                 </div>
                                             </div>
                                         `).join('')}
@@ -106,75 +87,70 @@ function initDashboard() {
                 </div>
             </div>
         `;
+        accordion.insertAdjacentHTML('beforeend', html);
 
-        // Initialize charts for each cluster
-        initClusterCharts(cluster);
+        // Age distribution chart
+        new Chart(document.getElementById(`ageChart${cluster.id}`), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(cluster.age_distribution),
+                datasets: [{
+                    data: Object.values(cluster.age_distribution),
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc']
+                }]
+            }
+        });
     });
 }
 
-// Initialize simulator
+// Simulator
 function initSimulator() {
     window.getRecommendation = () => {
-        const age = parseInt(document.getElementById('inputAge').value);
-        const job = document.getElementById('inputJob').value;
-        const resultDiv = document.getElementById('recommendationResult');
+        const ageInput = document.getElementById('inputAge');
+        const jobInput = document.getElementById('inputJob');
+        const resultDiv = document.getElementById('result');
 
-        const matchedCluster = researchData.clusters.find(cluster => {
+        // Validation
+        if (!ageInput.value || !jobInput.value) {
+            resultDiv.textContent = "Harap isi semua kolom!";
+            resultDiv.style.display = 'block';
+            return;
+        }
+
+        const age = parseInt(ageInput.value);
+        const job = jobInput.value;
+
+        // Find matching cluster
+        const matchedCluster = appData.clusters.find(cluster => {
+            // Check age group
             const ageGroup = Object.keys(cluster.age_distribution).find(group => {
-                const [min, max] = group.split('-')[0].split(' ')[0].split('-').map(Number);
+                const [min, max] = parseAgeGroup(group);
                 return age >= min && age <= max;
             });
+
+            // Check job dominance
             return ageGroup && cluster.dominant_job[job] > 20;
         });
 
+        // Show result
         if (matchedCluster) {
-            const mediaList = Object.entries(matchedCluster.preferred_media_types)
+            const media = Object.entries(matchedCluster.preferred_media_types)
                 .sort((a, b) => b[1] - a[1])
-                .map(([media, val]) => `${media} (${val}%)`);
+                .map(([media, pct]) => `${media} (${pct}%)`)
+                .join(', ');
 
-            resultDiv.style.display = 'block';
             resultDiv.innerHTML = `
-                <strong>Rekomendasi Media:</strong><br>
-                ${mediaList.slice(0, 3).join(', ')}<br>
-                <small class="text-muted">Klaster ${matchedCluster.id}: 
-                    ${getMaxKey(cluster.dominant_job)} - 
-                    Kepuasan ${matchedCluster.satisfaction}%
+                <strong>REKOMENDASI:</strong><br>
+                ${media}<br>
+                <small class="text-muted">
+                    Klaster ${matchedCluster.id} | 
+                    Tingkat Kepuasan: ${matchedCluster.satisfaction}%
                 </small>
             `;
+            resultDiv.style.display = 'block';
         } else {
-            resultDiv.innerHTML = "Rekomendasi tidak ditemukan. Gunakan media campuran (online & tradisional).";
+            resultDiv.textContent = "Tidak ditemukan rekomendasi spesifik. Gunakan media campuran.";
+            resultDiv.style.display = 'block';
         }
     };
-}
-
-// Helper functions
-function getMaxKey(obj) {
-    return Object.entries(obj).reduce((a, b) => a[1] > b[1] ? a : b)[0];
-}
-
-function initClusterCharts(cluster) {
-    // Age distribution chart
-    new Chart(document.getElementById(`ageChart${cluster.id}`), {
-        type: 'doughnut',
-        data: {
-            labels: Object.keys(cluster.age_distribution),
-            datasets: [{
-                data: Object.values(cluster.age_distribution),
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc']
-            }]
-        }
-    });
-
-    // Media preference chart
-    new Chart(document.getElementById(`mediaChart${cluster.id}`), {
-        type: 'bar',
-        data: {
-            labels: Object.keys(cluster.preferred_media_types),
-            datasets: [{
-                label: 'Persentase Pengguna',
-                data: Object.values(cluster.preferred_media_types),
-                backgroundColor: '#f6c23e'
-            }]
-        }
-    });
 }

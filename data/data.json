@@ -10,7 +10,6 @@
       "percentage": 55.33,
       "age_distribution": {"18-24 tahun": 87.95, "25-34 tahun": 7.23, "35-44 tahun": 4.82},
       "dominant_job": {"Pelajar/Mahasiswa": 84.34, "Karyawan Swasta": 15.66},
-      "main_media": {"Internet": 49.39, "Media Sosial": 45.78, "Televisi": 4.82},
       "preferred_media_types": {"Website Berita": 61.45, "TikTok": 53.01, "Instagram": 37.35},
       "importance": {"kecepatan": 63.86, "kedalaman": 57.83, "keterlibatan": 67.47},
       "satisfaction": 95.18
@@ -20,7 +19,7 @@
       "percentage": 1.33,
       "age_distribution": {"25-34 tahun": 50, "35-44 tahun": 50},
       "dominant_job": {"Karyawan Swasta": 50, "Pegawai Negeri": 50},
-      "main_media": {"Media Cetak": 50, "Televisi": 50},
+      "preferred_media_types": {"Media Cetak": 50, "Televisi": 50},
       "importance": {"kecepatan": 0, "kedalaman": 0, "keterlibatan": 0},
       "satisfaction": 50.00
     },
@@ -29,7 +28,6 @@
       "percentage": 24.67,
       "age_distribution": {"18-24 tahun": 56.76, "25-34 tahun": 27.03, "35-44 tahun": 16.22},
       "dominant_job": {"Pekerjaan Lainnya": 62.16, "Wirausaha": 35.14, "Pegawai Negeri": 2.70},
-      "main_media": {"Media Sosial": 62.16, "Internet": 32.43},
       "preferred_media_types": {"TikTok": 54.05, "Instagram": 35.14, "Website Berita": 64.86},
       "importance": {"kecepatan": 67.57, "kedalaman": 64.86, "keterlibatan": 62.16},
       "satisfaction": 97.30
@@ -39,7 +37,6 @@
       "percentage": 18.67,
       "age_distribution": {"18-24 tahun": 46.43, "25-34 tahun": 3.57, "35-44 tahun": 50.00},
       "dominant_job": {"Pegawai Negeri": 17.86, "Karyawan Swasta": 25.00, "Pelajar/Mahasiswa": 46.43},
-      "main_media": {"Media Cetak": 89.29},
       "preferred_media_types": {"Banner/Baliho": 82.14, "Koran": 17.86},
       "importance": {"kecepatan": 50.00, "kedalaman": 53.57, "keterlibatan": 78.57},
       "satisfaction": 100.00
