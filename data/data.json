@@ -1,0 +1,45 @@
+{
+    "metadata": {
+      "total_respondents": 150,
+      "data_collection_period": "2024",
+      "location": "Kabupaten Bangkalan"
+    },
+    "clusters_summary": [
+      {
+        "id": 1,
+        "size": 83,
+        "percentage": 55.3,
+        "dominant_group": "Pelajar/Mahasiswa",
+        "age_range": [18, 24],
+        "main_media": ["Media Sosial", "Internet"],
+        "description": "Kelompok muda yang sangat aktif di platform digital."
+      },
+      {
+        "id": 2,
+        "size": 2,
+        "percentage": 1.3,
+        "dominant_group": "Tidak signifikan",
+        "age_range": [25, 60],
+        "main_media": ["Tidak dominan"],
+        "description": "Klaster minoritas dengan karakteristik tidak konsisten."
+      },
+      {
+        "id": 3,
+        "size": 37,
+        "percentage": 24.7,
+        "dominant_group": "Wiraswasta & Pekerjaan Lainnya",
+        "age_range": [25, 34],
+        "main_media": ["Media Sosial", "Internet"],
+        "description": "Kelompok produktif yang mengandalkan media online."
+      },
+      {
+        "id": 4,
+        "size": 28,
+        "percentage": 18.7,
+        "dominant_group": "Pegawai Negeri & Karyawan Swasta",
+        "age_range": [35, 44],
+        "main_media": ["Media Cetak"],
+        "description": "Kelompok yang lebih tradisional dalam mengakses informasi."
+      }
+    ]
+  }

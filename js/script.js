@@ -1,63 +1,68 @@
-// Load Data
-Promise.all([
-    fetch('data/clusters.json').then(res => res.json()),
-    fetch('data/stats.json').then(res => res.json())
-]).then(([clusters, stats]) => {
-    initCharts(stats);
-    initSimulator(clusters);
-});
+let clusterData = {};
 
-// Initialize Charts
-function initCharts(stats) {
-    // Cluster Distribution Pie Chart
-    new Chart(document.getElementById('clusterChart'), {
+// Load data dari JSON
+fetch('data/data.json')
+    .then(response => response.json())
+    .then(data => {
+        clusterData = data;
+        initDashboard();
+    });
+
+function initDashboard() {
+    // Update total responden
+    document.getElementById('totalResponden').textContent = clusterData.metadata.total_respondents;
+
+    // Chart distribusi klaster
+    const ctx = document.getElementById('clusterChart').getContext('2d');
+    new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: stats.clusterLabels,
+            labels: clusterData.clusters_summary.map(c => `Klaster ${c.id}`),
             datasets: [{
-                data: stats.clusterSizes,
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc']
+                data: clusterData.clusters_summary.map(c => c.percentage),
+                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
             }]
         }
     });
 
-    // Media Preference Bar Chart
-    new Chart(document.getElementById('mediaPreferenceChart'), {
-        type: 'bar',
-        data: {
-            labels: stats.mediaTypes,
-            datasets: [{
-                label: 'Persentase Pengguna',
-                data: stats.mediaPercentages,
-                backgroundColor: '#4e73df'
-            }]
-        }
+    // Tampilkan detail klaster
+    const container = document.getElementById('clusterDetails');
+    clusterData.clusters_summary.forEach(cluster => {
+        const html = `
+            <div class="col-md-6">
+                <div class="cluster-card p-3 bg-white">
+                    <h6>Klaster ${cluster.id} - ${cluster.dominant_group}</h6>
+                    <small class="text-muted">Usia: ${cluster.age_range[0]}-${cluster.age_range[1]} tahun</small>
+                    <p class="mt-2">${cluster.description}</p>
+                    <div class="badge bg-primary">Media Utama: ${cluster.main_media.join(', ')}</div>
+                </div>
+            </div>
+        `;
+        container.innerHTML += html;
     });
 }
 
-// Simulator Logic
-function initSimulator(clusters) {
-    window.recommendMedia = () => {
-        const age = parseInt(document.getElementById('age').value);
-        const education = document.getElementById('education').value;
-        const resultDiv = document.getElementById('recommendationResult');
+// Simulator rekomendasi
+function getRecommendation() {
+    const age = parseInt(document.getElementById('inputAge').value);
+    const education = document.getElementById('inputEducation').value;
+    const resultDiv = document.getElementById('recommendationResult');
 
-        const match = clusters.find(c => 
-            age >= c.age_range[0] && 
-            age <= c.age_range[1] && 
-            c.education === education
-        );
+    const matchedCluster = clusterData.clusters_summary.find(cluster => 
+        age >= cluster.age_range[0] && 
+        age <= cluster.age_range[1] && 
+        cluster.dominant_group === education
+    );
 
-        if (match) {
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `
-                <strong>Rekomendasi Media:</strong><br>
-                ${match.recommended_media.join(', ')}<br>
-                <small class="text-muted">Klaster ${match.cluster}: ${match.description}</small>
-            `;
-        } else {
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = 'Tidak ditemukan rekomendasi untuk kriteria ini.';
-        }
-    };
+    if (matchedCluster) {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+            <strong>Rekomendasi Media:</strong><br>
+            ${matchedCluster.main_media.join(', ')}<br>
+            <small class="text-muted">Klaster ${matchedCluster.id}: ${matchedCluster.description}</small>
+        `;
+    } else {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = 'Tidak ditemukan rekomendasi untuk kriteria ini.';
+    }
 }
