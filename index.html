@@ -3,79 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preferensi Media - Kabupaten Bangkalan</title>
+    <title>Analisis Preferensi Media - Bangkalan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="images/logo.png" height="30" class="d-inline-block align-top" alt="Logo">
+                <img src="images/logo.png" height="30" alt="Logo">
                 Preferensi Media Bangkalan
             </a>
         </div>
     </nav>
 
     <!-- Dashboard -->
-    <section id="dashboard" class="py-5 bg-light">
+    <section class="py-5">
         <div class="container">
-            <h2 class="text-center mb-4">📊 Hasil Analisis Klaster</h2>
-            
             <!-- Statistik Utama -->
             <div class="row mb-4">
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Responden</h5>
-                            <p id="totalResponden" class="display-4 text-primary">0</p>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow">
+                        <div class="card-body text-center">
+                            <h5 class="text-primary">Total Responden</h5>
+                            <h1 id="totalResponden" class="display-4">150</h1>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
-                    <div class="card h-100">
+                <div class="col-md-8 mb-3">
+                    <div class="card h-100 shadow">
                         <div class="card-body">
-                            <h5 class="card-title">Persebaran Klaster</h5>
-                            <canvas id="clusterChart"></canvas>
+                            <h5>Persebaran Klaster</h5>
+                            <canvas id="mainPieChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Detail Klaster -->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">📋 Deskripsi Tiap Klaster</h5>
-                            <div id="clusterDetails" class="row"></div>
-                        </div>
+            <!-- Tabel & Accordion -->
+            <div class="card mb-4 shadow">
+                <div class="card-body">
+                    <h5 class="card-title">📊 Analisis Detail Klaster</h5>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-hover" id="summaryTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Klaster</th>
+                                    <th>Usia Dominan</th>
+                                    <th>Pekerjaan Utama</th>
+                                    <th>Media Paling Digunakan</th>
+                                    <th>Tingkat Kepuasan</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
+                    
+                    <div class="accordion" id="clusterAccordion"></div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Simulator -->
-    <section id="simulator" class="py-5">
+    <section class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center mb-4">🎮 Simulator Rekomendasi Media</h2>
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="card shadow">
-                        <div class="card-body">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">🔍 Simulator Rekomendasi Media</h2>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Usia</label>
-                                <input type="number" class="form-control" id="inputAge">
+                                <input type="number" class="form-control" id="inputAge" min="17" max="100">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Pendidikan</label>
-                                <select class="form-select" id="inputEducation">
+                                <label class="form-label">Pekerjaan</label>
+                                <select class="form-select" id="inputJob">
                                     <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
-                                    <option value="Wiraswasta & Pekerjaan Lainnya">Wiraswasta & Pekerjaan Lainnya</option>
-                                    <option value="Pegawai Negeri & Karyawan Swasta">Pegawai Negeri & Karyawan Swasta</option>
+                                    <option value="Karyawan Swasta">Karyawan Swasta</option>
+                                    <option value="Pegawai Negeri">Pegawai Negeri</option>
+                                    <option value="Wirausaha">Wirausaha</option>
                                 </select>
                             </div>
                             <button class="btn btn-primary w-100" onclick="getRecommendation()">Dapatkan Rekomendasi</button>
@@ -88,9 +98,9 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white py-4">
+    <footer class="bg-dark text-white py-4 mt-5">
         <div class="container text-center">
-            <p>© 2024 Dinas Kominfo Bangkalan</p>
+            <small>Dinas Komunikasi dan Informatika Kabupaten Bangkalan © 2024</small>
         </div>
     </footer>
 
