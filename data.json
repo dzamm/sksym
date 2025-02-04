@@ -1,47 +1,41 @@
 {
-  "total_responden": 150,
   "clusters": [
-    {
-      "id": 1,
-      "jumlah_responden": 83,
-      "rentang_usia_dominan": "18-24 tahun",
-      "pendidikan_terakhir": "SMA atau sederajat",
-      "pekerjaan": "Mayoritas Pelajar/Mahasiswa",
-      "media_informasi_utama": ["Internet", "Media Sosial"],
-      "kepuasan_media": "Sebagian besar Memuaskan"
-    },
-    {
-      "id": 2,
-      "jumlah_responden": 2,
-      "rentang_usia_dominan": "35-44 tahun",
-      "pendidikan_terakhir": "Sarjana (S1)",
-      "pekerjaan": "Pegawai Negeri dan Karyawan Swasta",
-      "media_informasi_utama": ["Media Cetak", "Website Pemerintah"],
-      "kepuasan_media": "Cenderung Netral"
-    },
-    {
-      "id": 3,
-      "jumlah_responden": 37,
-      "rentang_usia_dominan": "25-34 tahun",
-      "pendidikan_terakhir": "SMA dan Sarjana",
-      "pekerjaan": "Wirausaha dan Karyawan Swasta",
-      "media_informasi_utama": ["Internet", "TikTok", "Instagram"],
-      "kepuasan_media": "Mayoritas Memuaskan"
-    },
-    {
-      "id": 4,
-      "jumlah_responden": 28,
-      "rentang_usia_dominan": "35-44 tahun",
-      "pendidikan_terakhir": "SMA atau Sarjana",
-      "pekerjaan": "Beragam (PNS, Mahasiswa, Swasta, dll.)",
-      "media_informasi_utama": ["Media Cetak", "Baliho"],
-      "kepuasan_media": "Sebagian besar Memuaskan"
-    }
+    {"id": 1, "cases": 83, "percentage": 55.33},
+    {"id": 2, "cases": 2, "percentage": 1.33},
+    {"id": 3, "cases": 37, "percentage": 24.67},
+    {"id": 4, "cases": 28, "percentage": 18.67}
   ],
-  "preferensi_media": {
-    "media_cetak": ["Cluster 2", "Cluster 4"],
-    "internet_media_sosial": ["Cluster 1", "Cluster 3"],
-    "website_pemerintah": ["Cluster 2"],
-    "tiktok_instagram": ["Cluster 3"]
+  "demographics": {
+    "age_distribution": {
+      "18-24": {"cluster_1": 73, "cluster_2": 0, "cluster_3": 21, "cluster_4": 13},
+      "25-34": {"cluster_1": 6, "cluster_2": 1, "cluster_3": 10, "cluster_4": 1},
+      "35-44": {"cluster_1": 4, "cluster_2": 1, "cluster_3": 6, "cluster_4": 14}
+    },
+    "occupation_distribution": {
+      "Pelajar/Mahasiswa": {"cluster_1": 70, "cluster_4": 13},
+      "Karyawan Swasta": {"cluster_1": 13, "cluster_2": 1, "cluster_4": 7},
+      "Pegawai Negeri": {"cluster_2": 1, "cluster_3": 1, "cluster_4": 5},
+      "Wirausaha": {"cluster_3": 13, "cluster_4": 3},
+      "Pekerjaan Lainnya": {"cluster_3": 23}
+    }
+  },
+  "media_preferences": {
+    "frequent_media": {
+      "Media Sosial": {"cluster_1": 38, "cluster_3": 23},
+      "Internet": {"cluster_1": 41, "cluster_3": 12},
+      "Media Cetak": {"cluster_2": 1, "cluster_4": 25},
+      "Televisi": {"cluster_2": 1, "cluster_4": 3}
+    },
+    "media_types": {
+      "Media Cetak": {"Banner/Baliho": 86, "Koran": 19, "Majalah": 12},
+      "Internet": {"Website Berita": 89, "Website Pemerintah": 28, "Blog": 14},
+      "Media Sosial": {"TikTok": 71, "Instagram": 52, "Facebook": 11}
+    }
+  },
+  "satisfaction": {
+    "Memuaskan": 119,
+    "Sangat Memuaskan": 25,
+    "Tidak Memuaskan": 5,
+    "Sangat Tidak Memuaskan": 1
   }
 }
