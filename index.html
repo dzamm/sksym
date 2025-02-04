@@ -80,12 +80,29 @@
                         <canvas id="mediaFrequentChart"></canvas>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card p-4">
-                        <h5>Jenis Media Sosial</h5>
-                        <canvas id="mediaSocialChart"></canvas>
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="card p-4">
+                                <h5>Media Cetak</h5>
+                                <canvas id="mediaCetakChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-4">
+                                <h5>Internet</h5>
+                                <canvas id="internetChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-4">
+                                <h5>Media Sosial</h5>
+                                <canvas id="mediaSosialChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
+                
             </div>
         </section>
 
@@ -103,62 +120,184 @@
     </div>
 
     <script>
-        // Load JSON Data
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
-                initCharts(data);
+                // Update total respondents
                 document.getElementById('totalRespondents').textContent = 
                     data.clusters.reduce((sum, cluster) => sum + cluster.cases, 0);
+    
+                // Initialize all charts
+                initClusterChart(data);
+                initAgeChart(data);
+                initOccupationChart(data);
+                initMediaCharts(data);
+                initSatisfactionChart(data);
             });
-
-        function initCharts(data) {
-            // Cluster Distribution Pie Chart
+    
+        function initClusterChart(data) {
             new Chart(document.getElementById('clusterChart'), {
                 type: 'pie',
                 data: {
                     labels: data.clusters.map(c => `Klaster ${c.id} (${c.percentage}%)`),
                     datasets: [{
-                        data: data.clusters.map(c => c.percentage),
-                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
+                        data: data.clusters.map(c => c.cases),
+                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'],
+                        hoverOffset: 10
                     }]
                 }
             });
-
-            // Age Distribution Bar Chart
+        }
+    
+        function initAgeChart(data) {
+            const ageData = data.demographics.age_distribution;
             new Chart(document.getElementById('ageChart'), {
                 type: 'bar',
                 data: {
-                    labels: Object.keys(data.demographics.age_distribution),
-                    datasets: Object.keys(data.clusters).map((_, i) => ({
-                        label: `Klaster ${i+1}`,
-                        data: Object.values(data.demographics.age_distribution).map(age => age[`cluster_${i+1}`]),
-                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'][i]
-                    }))
+                    labels: Object.keys(ageData),
+                    datasets: [
+                        {
+                            label: 'Klaster 1',
+                            data: Object.values(ageData).map(d => d.cluster_1),
+                            backgroundColor: '#4e73df'
+                        },
+                        {
+                            label: 'Klaster 2',
+                            data: Object.values(ageData).map(d => d.cluster_2),
+                            backgroundColor: '#1cc88a'
+                        },
+                        {
+                            label: 'Klaster 3',
+                            data: Object.values(ageData).map(d => d.cluster_3),
+                            backgroundColor: '#36b9cc'
+                        },
+                        {
+                            label: 'Klaster 4',
+                            data: Object.values(ageData).map(d => d.cluster_4),
+                            backgroundColor: '#f6c23e'
+                        }
+                    ]
                 },
-                options: { scales: { x: { stacked: true }, y: { stacked: true } } }
+                options: {
+                    scales: {
+                        x: { stacked: true },
+                        y: { stacked: true }
+                    }
+                }
             });
-
-            // Media Preferences Doughnut Chart
+        }
+    
+        function initOccupationChart(data) {
+            const occupationData = data.demographics.occupation_distribution;
+            new Chart(document.getElementById('occupationChart'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(occupationData),
+                    datasets: [
+                        {
+                            label: 'Klaster 1',
+                            data: Object.values(occupationData).map(d => d.cluster_1 || 0),
+                            backgroundColor: '#4e73df'
+                        },
+                        {
+                            label: 'Klaster 2',
+                            data: Object.values(occupationData).map(d => d.cluster_2 || 0),
+                            backgroundColor: '#1cc88a'
+                        },
+                        {
+                            label: 'Klaster 3',
+                            data: Object.values(occupationData).map(d => d.cluster_3 || 0),
+                            backgroundColor: '#36b9cc'
+                        },
+                        {
+                            label: 'Klaster 4',
+                            data: Object.values(occupationData).map(d => d.cluster_4 || 0),
+                            backgroundColor: '#f6c23e'
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: { stacked: true },
+                        y: { stacked: true }
+                    }
+                }
+            });
+        }
+    
+        function initMediaCharts(data) {
+            // Frequent Media Chart
             new Chart(document.getElementById('mediaFrequentChart'), {
-                type: 'doughnut',
+                type: 'bar',
                 data: {
                     labels: Object.keys(data.media_preferences.frequent_media),
+                    datasets: [
+                        {
+                            label: 'Klaster 1',
+                            data: Object.values(data.media_preferences.frequent_media).map(m => m.cluster_1 || 0),
+                            backgroundColor: '#4e73df'
+                        },
+                        {
+                            label: 'Klaster 3',
+                            data: Object.values(data.media_preferences.frequent_media).map(m => m.cluster_3 || 0),
+                            backgroundColor: '#36b9cc'
+                        },
+                        {
+                            label: 'Klaster 4',
+                            data: Object.values(data.media_preferences.frequent_media).map(m => m.cluster_4 || 0),
+                            backgroundColor: '#f6c23e'
+                        }
+                    ]
+                }
+            });
+    
+            // Media Types Charts
+            const mediaTypes = data.media_preferences.media_types;
+            
+            // Media Cetak
+            new Chart(document.getElementById('mediaCetakChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(mediaTypes['Media Cetak']),
                     datasets: [{
-                        data: Object.values(data.media_preferences.frequent_media).map(m => 
-                            Object.values(m).reduce((a, b) => a + b, 0)
-                        ),
-                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
+                        data: Object.values(mediaTypes['Media Cetak']),
+                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc']
                     }]
                 }
             });
-
-            // Satisfaction Pie Chart
+    
+            // Internet
+            new Chart(document.getElementById('internetChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(mediaTypes.Internet),
+                    datasets: [{
+                        data: Object.values(mediaTypes.Internet),
+                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc']
+                    }]
+                }
+            });
+    
+            // Media Sosial
+            new Chart(document.getElementById('mediaSosialChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(mediaTypes['Media Sosial']),
+                    datasets: [{
+                        data: Object.values(mediaTypes['Media Sosial']),
+                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc']
+                    }]
+                }
+            });
+        }
+    
+        function initSatisfactionChart(data) {
             new Chart(document.getElementById('satisfactionChart'), {
-                type: 'pie',
+                type: 'bar',
                 data: {
                     labels: Object.keys(data.satisfaction),
                     datasets: [{
+                        label: 'Jumlah Responden',
                         data: Object.values(data.satisfaction),
                         backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
                     }]
