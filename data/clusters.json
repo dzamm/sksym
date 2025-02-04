@@ -1,0 +1,16 @@
+[
+    {
+        "cluster": 1,
+        "age_range": [18, 30],
+        "education": "SMA",
+        "recommended_media": ["Instagram", "TikTok", "Website"],
+        "description": "Kelompok Muda Melek Digital"
+    },
+    {
+        "cluster": 2,
+        "age_range": [40, 60],
+        "education": "SD",
+        "recommended_media": ["Radio", "Pertemuan RT"],
+        "description": "Kelompok Tradisional"
+    }
+]

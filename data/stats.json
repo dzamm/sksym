@@ -1,0 +1,6 @@
+{
+    "clusterLabels": ["Klaster 1", "Klaster 2", "Klaster 3"],
+    "clusterSizes": [45, 30, 25],
+    "mediaTypes": ["TV", "Radio", "Media Sosial", "Website"],
+    "mediaPercentages": [20, 15, 40, 25]
+}
