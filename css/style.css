@@ -1,17 +1,12 @@
-:root {
-    --primary: #2c3e50;
-    --secondary: #4e73df;
-}
-
+/* Custom Styles */
 body {
-    font-family: 'Segoe UI', system-ui;
-    padding-top: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .card {
     border: none;
-    border-radius: 10px;
-    transition: transform 0.3s ease;
+    border-radius: 15px;
+    transition: transform 0.3s;
 }
 
 .card:hover {
@@ -19,17 +14,19 @@ body {
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
-.accordion-button:not(.collapsed) {
-    background-color: rgba(78, 115, 223, 0.1);
-    color: var(--primary);
-    font-weight: 600;
+#simulator .card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
 
-.progress-bar {
-    background-color: var(--secondary);
-    transition: width 0.8s ease;
+footer {
+    background: #2c3e50 !important;
 }
 
-#result {
-    transition: all 0.3s ease;
+.list-group-item {
+    transition: background-color 0.2s;
+}
+
+#clusterTable th {
+    background-color: #4e73df;
+    color: white;
 }

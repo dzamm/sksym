@@ -3,90 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analisis Preferensi Media - Bangkalan</title>
+    <title>Preferensi Media Kabupaten Bangkalan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="images/logo.png" height="30" alt="Logo" class="me-2">
-                Preferensi Media Kab. Bangkalan
-            </a>
-        </div>
-    </nav>
+    <!-- Navbar (sama seperti sebelumnya) -->
 
-    <main class="container my-5">
-        <!-- Dashboard -->
-        <section class="mb-5">
-            <h2 class="text-center mb-4">📊 Dashboard Analisis</h2>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card shadow">
-                        <div class="card-body text-center">
-                            <h5 class="text-primary">Total Responden</h5>
-                            <h1 id="totalResponden" class="display-4">0</h1>
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="py-5 bg-light">
+        <div class="container">
+            <!-- Total Responden -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Responden</h5>
+                            <h1 id="totalResponden" class="display-4">150</h1>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+            </div>
+
+            <!-- Grafik Klaster -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Distribusi Klaster</h5>
+                            <canvas id="clusterChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Preferensi Media per Klaster</h5>
+                            <canvas id="mediaChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabel Detail Klaster -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Detail Klaster</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="clusterTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Klaster</th>
+                                            <th>Usia Dominan</th>
+                                            <th>Pendidikan</th>
+                                            <th>Pekerjaan</th>
+                                            <th>Media Utama</th>
+                                            <th>Kepuasan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulator Section (Diupdate) -->
+    <section id="simulator" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Simulator Rekomendasi Media</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
                     <div class="card shadow">
                         <div class="card-body">
-                            <h5>Distribusi Klaster</h5>
-                            <canvas id="mainChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Detail Klaster -->
-        <section class="mb-5">
-            <div class="card shadow">
-                <div class="card-body">
-                    <h5 class="card-title mb-4">🔍 Detail Tiap Klaster</h5>
-                    <div class="accordion" id="clusterAccordion"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Simulator -->
-        <section class="mb-5">
-            <div class="card shadow">
-                <div class="card-body">
-                    <h2 class="text-center mb-4">🎮 Simulator Rekomendasi</h2>
-                    <div class="row justify-content-center">
-                        <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Usia</label>
-                                <input type="number" class="form-control" id="inputAge" min="17" max="100" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Pekerjaan</label>
-                                <select class="form-select" id="inputJob" required>
-                                    <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
-                                    <option value="Karyawan Swasta">Karyawan Swasta</option>
-                                    <option value="Pegawai Negeri">Pegawai Negeri</option>
-                                    <option value="Wirausaha">Wirausaha</option>
+                                <label class="form-label">Rentang Usia</label>
+                                <select class="form-select" id="inputAge">
+                                    <option>18-24 tahun</option>
+                                    <option>25-34 tahun</option>
+                                    <option>35-44 tahun</option>
                                 </select>
                             </div>
-                            <button class="btn btn-primary w-100" onclick="getRecommendation()">Cari Rekomendasi</button>
-                            <div id="result" class="alert alert-success mt-3" style="display:none;"></div>
+                            <div class="mb-3">
+                                <label class="form-label">Pendidikan Terakhir</label>
+                                <select class="form-select" id="inputEducation">
+                                    <option>SMA atau sederajat</option>
+                                    <option>Sarjana (S1)</option>
+                                    <option>SMA atau Sarjana</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary w-100" onclick="recommendMedia()">Dapatkan Rekomendasi</button>
+                            <div id="recommendationResult" class="mt-3 alert alert-success" style="display:none;"></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
-
-    <footer class="bg-dark text-white py-4">
-        <div class="container text-center">
-            <small>Dinas Komunikasi dan Informatika Kabupaten Bangkalan © 2024</small>
         </div>
-    </footer>
+    </section>
 
+    <!-- Bagian Preferensi Media -->
+    <section id="preferences" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-4">Peta Preferensi Media</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Media Cetak</h5>
+                            <ul id="printMediaList" class="list-group"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Media Digital</h5>
+                            <ul id="digitalMediaList" class="list-group"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Script JS & Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js"></script>
 </body>

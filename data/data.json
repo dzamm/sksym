@@ -1,45 +1,47 @@
 {
-  "metadata": {
-    "total_respondents": 150,
-    "location": "Kabupaten Bangkalan",
-    "tahun": "2024"
-  },
+  "total_responden": 150,
   "clusters": [
     {
       "id": 1,
-      "percentage": 55.33,
-      "age_distribution": {"18-24 tahun": 87.95, "25-34 tahun": 7.23, "35-44 tahun": 4.82},
-      "dominant_job": {"Pelajar/Mahasiswa": 84.34, "Karyawan Swasta": 15.66},
-      "preferred_media_types": {"Website Berita": 61.45, "TikTok": 53.01, "Instagram": 37.35},
-      "importance": {"kecepatan": 63.86, "kedalaman": 57.83, "keterlibatan": 67.47},
-      "satisfaction": 95.18
+      "jumlah_responden": 83,
+      "rentang_usia_dominan": "18-24 tahun",
+      "pendidikan_terakhir": "SMA atau sederajat",
+      "pekerjaan": "Mayoritas Pelajar/Mahasiswa",
+      "media_informasi_utama": ["Internet", "Media Sosial"],
+      "kepuasan_media": "Sebagian besar Memuaskan"
     },
     {
       "id": 2,
-      "percentage": 1.33,
-      "age_distribution": {"25-34 tahun": 50, "35-44 tahun": 50},
-      "dominant_job": {"Karyawan Swasta": 50, "Pegawai Negeri": 50},
-      "preferred_media_types": {"Media Cetak": 50, "Televisi": 50},
-      "importance": {"kecepatan": 0, "kedalaman": 0, "keterlibatan": 0},
-      "satisfaction": 50.00
+      "jumlah_responden": 2,
+      "rentang_usia_dominan": "35-44 tahun",
+      "pendidikan_terakhir": "Sarjana (S1)",
+      "pekerjaan": "Pegawai Negeri dan Karyawan Swasta",
+      "media_informasi_utama": ["Media Cetak", "Website Pemerintah"],
+      "kepuasan_media": "Cenderung Netral"
     },
     {
       "id": 3,
-      "percentage": 24.67,
-      "age_distribution": {"18-24 tahun": 56.76, "25-34 tahun": 27.03, "35-44 tahun": 16.22},
-      "dominant_job": {"Pekerjaan Lainnya": 62.16, "Wirausaha": 35.14, "Pegawai Negeri": 2.70},
-      "preferred_media_types": {"TikTok": 54.05, "Instagram": 35.14, "Website Berita": 64.86},
-      "importance": {"kecepatan": 67.57, "kedalaman": 64.86, "keterlibatan": 62.16},
-      "satisfaction": 97.30
+      "jumlah_responden": 37,
+      "rentang_usia_dominan": "25-34 tahun",
+      "pendidikan_terakhir": "SMA dan Sarjana",
+      "pekerjaan": "Wirausaha dan Karyawan Swasta",
+      "media_informasi_utama": ["Internet", "TikTok", "Instagram"],
+      "kepuasan_media": "Mayoritas Memuaskan"
     },
     {
       "id": 4,
-      "percentage": 18.67,
-      "age_distribution": {"18-24 tahun": 46.43, "25-34 tahun": 3.57, "35-44 tahun": 50.00},
-      "dominant_job": {"Pegawai Negeri": 17.86, "Karyawan Swasta": 25.00, "Pelajar/Mahasiswa": 46.43},
-      "preferred_media_types": {"Banner/Baliho": 82.14, "Koran": 17.86},
-      "importance": {"kecepatan": 50.00, "kedalaman": 53.57, "keterlibatan": 78.57},
-      "satisfaction": 100.00
+      "jumlah_responden": 28,
+      "rentang_usia_dominan": "35-44 tahun",
+      "pendidikan_terakhir": "SMA atau Sarjana",
+      "pekerjaan": "Beragam (PNS, Mahasiswa, Swasta, dll.)",
+      "media_informasi_utama": ["Media Cetak", "Baliho"],
+      "kepuasan_media": "Sebagian besar Memuaskan"
     }
-  ]
+  ],
+  "preferensi_media": {
+    "media_cetak": ["Cluster 2", "Cluster 4"],
+    "internet_media_sosial": ["Cluster 1", "Cluster 3"],
+    "website_pemerintah": ["Cluster 2"],
+    "tiktok_instagram": ["Cluster 3"]
+  }
 }
