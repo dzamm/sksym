@@ -130,122 +130,135 @@
 
  <!-- Simulator Section -->
  <section id="simulator" class="py-5 bg-light">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="simulator-card p-4">
-                    <h2 class="text-center mb-4">Simulator Rekomendasi Media</h2>
-                    
-                    <!-- Input Form -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <label class="form-label">Usia</label>
-                            <input type="number" class="form-control" id="inputAge" min="18" max="100">
-                        <div class="col-md-4">
-                            <label class="form-label">Pekerjaan</label>
-                            <select class="form-select" id="inputOccupation">
-                                <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
-                                <option value="Karyawan Swasta">Karyawan Swasta</option>
-                                <option value="Pegawai Negeri">Pegawai Negeri</option>
-                                <option value="Wirausaha">Wirausaha</option>
-                                <option value="Lainnya">Lainnya</option>
-                            </select>
-                        </div>
+    <div class="container my-5">
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <h2 class="text-center mb-4">Simulator Rekomendasi Media</h2>
+                
+                <!-- Input Form -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Usia</label>
+                        <input type="number" class="form-control" id="inputAge" min="18" max="100" required>
                     </div>
-
-                    <!-- Recommendation Result -->
-                    <div id="recommendation" class="recommendation-result p-3 bg-white" style="display: none;">
-                        <h5 class="text-primary mb-3">Media yang Direkomendasikan:</h5>
-                        <div id="mediaList" class="row"></div>
+                    <div class="col-md-6">
+                        <label class="form-label">Pekerjaan</label>
+                        <select class="form-select" id="inputOccupation" required>
+                            <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
+                            <option value="Karyawan Swasta">Karyawan Swasta</option>
+                            <option value="Pegawai Negeri">Pegawai Negeri</option>
+                            <option value="Wirausaha">Wirausaha</option>
+                            <option value="Pekerjaan Lainnya">Pekerjaan Lainnya</option>
+                        </select>
                     </div>
-
-                    <button class="btn btn-primary w-100 mt-3" onclick="generateRecommendation()">
-                        Dapatkan Rekomendasi
-                    </button>
                 </div>
+    
+                <!-- Hasil Rekomendasi -->
+                <div id="recommendationResult" class="mt-4" style="display:none;">
+                    <h4 class="text-primary mb-3"><i class="fas fa-bullhorn me-2"></i>Media Terbaik untuk Anda:</h4>
+                    <div id="mediaRecommendations" class="row"></div>
+                </div>
+    
+                <button class="btn btn-primary w-100 py-2" onclick="generateRecommendation()">
+                    <i class="fas fa-magic me-2"></i>Dapatkan Rekomendasi
+                </button>
             </div>
         </div>
     </div>
-</section>
-
-<script>
-    // Fungsi Simulator
+    
+    <script>
     function generateRecommendation() {
-        const userData = {
-            age: parseInt(document.getElementById('inputAge').value),
-            occupation: document.getElementById('inputOccupation').value
-        };
-
+        const userAge = parseInt(document.getElementById('inputAge').value);
+        const userOccupation = document.getElementById('inputOccupation').value;
+    
+        // Validasi input
+        if(!userAge || userAge < 18 || userAge > 100) {
+            alert("Mohon masukkan usia antara 18-100 tahun");
+            return;
+        }
+    
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
-                const recommendedCluster = findBestCluster(userData, data);
-                const recommendedMedia = getClusterMedia(recommendedCluster.id, data);
-                displayRecommendation(recommendedMedia);
+                const bestCluster = calculateBestCluster(userAge, userOccupation, data);
+                const recommendations = getMediaRecommendations(bestCluster, data);
+                displayRecommendations(recommendations);
             });
     }
-
-    function findBestCluster(user, data) {
-        // 1. Match berdasarkan usia
-        const ageCluster = data.demographics.age_distribution;
-        let ageScores = {};
-
-        for(const [ageRange, clusters] of Object.entries(ageCluster)) {
-            const [min, max] = ageRange.split('-').map(Number);
-            if(user.age >= min && user.age <= max) {
-                ageScores = clusters;
+    
+    function calculateBestCluster(age, occupation, data) {
+        // 1. Cari distribusi usia
+        let ageCluster = {};
+        for(const [range, clusters] of Object.entries(data.demographics.age_distribution)) {
+            const [min, max] = range.split('-').map(Number);
+            if(age >= min && age <= max) {
+                ageCluster = clusters;
                 break;
             }
         }
-
-        // 2. Match berdasarkan pekerjaan
-        const occupationData = data.demographics.occupation_distribution[user.occupation] || {};
-
-        // 3. Hitung skor total
+    
+        // 2. Cari distribusi pekerjaan
+        const occupationCluster = data.demographics.occupation_distribution[occupation] || {};
+    
+        // 3. Hitung skor gabungan
         const clusterScores = data.clusters.map(cluster => {
             const clusterId = cluster.id;
+            const ageScore = ageCluster[`cluster_${clusterId}`] || 0;
+            const occupationScore = occupationCluster[`cluster_${clusterId}`] || 0;
+            
             return {
-                cluster: clusterId,
-                score: (ageScores[`cluster_${clusterId}`] || 0) + 
-                       (occupationData[`cluster_${clusterId}`] || 0)
+                clusterId,
+                totalScore: ageScore + occupationScore
             };
         });
-
+    
         // 4. Ambil cluster dengan skor tertinggi
-        return clusterScores.reduce((a, b) => a.score > b.score ? a : b);
+        return clusterScores.reduce((a, b) => a.totalScore > b.totalScore ? a : b).clusterId;
     }
-
-    function getClusterMedia(clusterId, data) {
+    
+    function getMediaRecommendations(clusterId, data) {
+        const clusterData = data.clusters.find(c => c.id === clusterId);
         const mediaData = data.media_preferences.frequent_media;
-        const clusterKey = `cluster_${clusterId}`;
         
+        // Hitung persentase preferensi media
         return Object.entries(mediaData)
-            .filter(([_, clusters]) => clusters[clusterKey])
-            .map(([media, clusters]) => ({
-                media,
-                count: clusters[clusterKey]
-            }))
-            .sort((a, b) => b.count - a.count);
+            .filter(([_, clusters]) => clusters[`cluster_${clusterId}`])
+            .map(([media, clusters]) => {
+                const count = clusters[`cluster_${clusterId}`];
+                const percentage = ((count / clusterData.cases) * 100).toFixed(1);
+                return { media, percentage };
+            })
+            .sort((a, b) => b.percentage - a.percentage);
     }
-
-    function displayRecommendation(mediaList) {
-        const container = document.getElementById('mediaList');
+    
+    function displayRecommendations(recommendations) {
+        const container = document.getElementById('mediaRecommendations');
         container.innerHTML = '';
         
-        mediaList.forEach(media => {
-            const mediaCard = `
+        recommendations.forEach((rec, index) => {
+            const badgeColor = index === 0 ? 'bg-primary' : 'bg-secondary';
+            const card = `
                 <div class="col-md-6 mb-3">
-                    <div class="card p-3">
-                        <h6>${media.media}</h6>
-                        <small class="text-muted">Direkomendasikan untuk ${media.count}% responden</small>
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                    <span class="badge ${badgeColor} rounded-pill me-2">${index + 1}</span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-0">${rec.media}</h5>
+                                    <small class="text-muted">${rec.percentage}% pengguna di klaster ini</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>`;
-            container.innerHTML += mediaCard;
+            container.innerHTML += card;
         });
-
-        document.getElementById('recommendation').style.display = 'block';
+    
+        document.getElementById('recommendationResult').style.display = 'block';
     }
-</script>
+    </script>
     
     <script>
         fetch('data.json')
