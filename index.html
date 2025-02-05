@@ -19,6 +19,15 @@
         .navbar {
             background: linear-gradient(135deg, #2c3e50, #3498db);
         }
+        .simulator-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .recommendation-result {
+            border-left: 4px solid #4e73df;
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -26,7 +35,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="logo.png" height="30" class="me-2"> Analisis Media Bangkalan
+                <img src="images/logo.png" height="30" class="me-2"> Preferensi Media Informasi Masyarakat Kabuapaten Bangkalan
             </a>
         </div>
     </nav>
@@ -119,6 +128,137 @@
         </section>
     </div>
 
+ <!-- Simulator Section -->
+ <section id="simulator" class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="simulator-card p-4">
+                    <h2 class="text-center mb-4">Simulator Rekomendasi Media</h2>
+                    
+                    <!-- Input Form -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label">Usia</label>
+                            <input type="number" class="form-control" id="inputAge" min="18" max="100">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Pendidikan</label>
+                            <select class="form-select" id="inputEducation">
+                                <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
+                                <option value="Karyawan Swasta">Karyawan Swasta</option>
+                                <option value="Pegawai Negeri">Pegawai Negeri</option>
+                                <option value="Wirausaha">Wirausaha</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Pekerjaan</label>
+                            <select class="form-select" id="inputOccupation">
+                                <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
+                                <option value="Karyawan Swasta">Karyawan Swasta</option>
+                                <option value="Pegawai Negeri">Pegawai Negeri</option>
+                                <option value="Wirausaha">Wirausaha</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Recommendation Result -->
+                    <div id="recommendation" class="recommendation-result p-3 bg-white" style="display: none;">
+                        <h5 class="text-primary mb-3">Media yang Direkomendasikan:</h5>
+                        <div id="mediaList" class="row"></div>
+                    </div>
+
+                    <button class="btn btn-primary w-100 mt-3" onclick="generateRecommendation()">
+                        Dapatkan Rekomendasi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Fungsi Simulator
+    function generateRecommendation() {
+        const userData = {
+            age: parseInt(document.getElementById('inputAge').value),
+            education: document.getElementById('inputEducation').value,
+            occupation: document.getElementById('inputOccupation').value
+        };
+
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                const recommendedCluster = findBestCluster(userData, data);
+                const recommendedMedia = getClusterMedia(recommendedCluster.id, data);
+                displayRecommendation(recommendedMedia);
+            });
+    }
+
+    function findBestCluster(user, data) {
+        // 1. Match berdasarkan usia
+        const ageCluster = data.demographics.age_distribution;
+        let ageScores = {};
+
+        for(const [ageRange, clusters] of Object.entries(ageCluster)) {
+            const [min, max] = ageRange.split('-').map(Number);
+            if(user.age >= min && user.age <= max) {
+                ageScores = clusters;
+                break;
+            }
+        }
+
+        // 2. Match berdasarkan pekerjaan
+        const occupationData = data.demographics.occupation_distribution[user.occupation] || {};
+
+        // 3. Hitung skor total
+        const clusterScores = data.clusters.map(cluster => {
+            const clusterId = cluster.id;
+            return {
+                cluster: clusterId,
+                score: (ageScores[`cluster_${clusterId}`] || 0) + 
+                       (occupationData[`cluster_${clusterId}`] || 0)
+            };
+        });
+
+        // 4. Ambil cluster dengan skor tertinggi
+        return clusterScores.reduce((a, b) => a.score > b.score ? a : b);
+    }
+
+    function getClusterMedia(clusterId, data) {
+        const mediaData = data.media_preferences.frequent_media;
+        const clusterKey = `cluster_${clusterId}`;
+        
+        return Object.entries(mediaData)
+            .filter(([_, clusters]) => clusters[clusterKey])
+            .map(([media, clusters]) => ({
+                media,
+                count: clusters[clusterKey]
+            }))
+            .sort((a, b) => b.count - a.count);
+    }
+
+    function displayRecommendation(mediaList) {
+        const container = document.getElementById('mediaList');
+        container.innerHTML = '';
+        
+        mediaList.forEach(media => {
+            const mediaCard = `
+                <div class="col-md-6 mb-3">
+                    <div class="card p-3">
+                        <h6>${media.media}</h6>
+                        <small class="text-muted">Direkomendasikan untuk ${media.count}% responden</small>
+                    </div>
+                </div>`;
+            container.innerHTML += mediaCard;
+        });
+
+        document.getElementById('recommendation').style.display = 'block';
+    }
+</script>
+    
     <script>
         fetch('data.json')
             .then(response => response.json())
