@@ -141,17 +141,6 @@
                         <div class="col-md-4">
                             <label class="form-label">Usia</label>
                             <input type="number" class="form-control" id="inputAge" min="18" max="100">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Pendidikan</label>
-                            <select class="form-select" id="inputEducation">
-                                <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
-                                <option value="Karyawan Swasta">Karyawan Swasta</option>
-                                <option value="Pegawai Negeri">Pegawai Negeri</option>
-                                <option value="Wirausaha">Wirausaha</option>
-                                <option value="Lainnya">Lainnya</option>
-                            </select>
-                        </div>
                         <div class="col-md-4">
                             <label class="form-label">Pekerjaan</label>
                             <select class="form-select" id="inputOccupation">
@@ -184,7 +173,6 @@
     function generateRecommendation() {
         const userData = {
             age: parseInt(document.getElementById('inputAge').value),
-            education: document.getElementById('inputEducation').value,
             occupation: document.getElementById('inputOccupation').value
         };
 
