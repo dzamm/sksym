@@ -1,0 +1,68 @@
+{
+    "clusters": [
+      {"id": 1, "cases": 11, "percentage": 7.33},
+      {"id": 2, "cases": 78, "percentage": 52.00},
+      {"id": 3, "cases": 35, "percentage": 23.33},
+      {"id": 4, "cases": 26, "percentage": 17.33}
+    ],
+    "demographics": {
+      "age_distribution": {
+        "18-24": {"cluster_1": 11, "cluster_2": 68, "cluster_3": 19, "cluster_4": 9},
+        "25-34": {"cluster_1": 0, "cluster_2": 6, "cluster_3": 10, "cluster_4": 2},
+        "35-44": {"cluster_1": 0, "cluster_2": 4, "cluster_3": 6, "cluster_4": 15}
+      },
+      "education_distribution": {
+        "SMP": {"cluster_1": 1, "cluster_4": 3},
+        "SMA/SMK": {"cluster_1": 8, "cluster_2": 56, "cluster_3": 16, "cluster_4": 12},
+        "Diploma": {"cluster_2": 2, "cluster_3": 4, "cluster_4": 3},
+        "Sarjana": {"cluster_1": 2, "cluster_2": 19, "cluster_3": 14, "cluster_4": 8},
+        "Pascasarjana": {"cluster_2": 1, "cluster_3": 1}
+      },
+      "employment_distribution": {
+        "Pelajar/Mahasiswa": {"cluster_1": 9, "cluster_2": 65, "cluster_4": 9},
+        "Karyawan Swasta": {"cluster_2": 13, "cluster_4": 8},
+        "Pegawai Negeri": {"cluster_3": 1, "cluster_4": 6},
+        "Wirausaha": {"cluster_3": 13, "cluster_4": 3},
+        "Pekerjaan Lainnya": {"cluster_3": 21}
+      }
+    },
+    "media_preferences": {
+      "frequent_media": {
+        "Media Sosial": {"cluster_1": 9, "cluster_2": 31, "cluster_3": 21},
+        "Internet": {"cluster_1": 1, "cluster_2": 40, "cluster_3": 12},
+        "Media Cetak": {"cluster_2": 3, "cluster_4": 23},
+        "Televisi": {"cluster_1": 1, "cluster_2": 4, "cluster_3": 2, "cluster_4": 3}
+      },
+      "media_types": {
+        "Media Cetak": {"Banner/Baliho": 86, "Koran": 19, "Majalah": 12},
+        "Internet": {"Website Berita": 89, "Website Pemerintah": 28, "Blog": 14},
+        "Media Sosial": {"TikTok": 71, "Instagram": 52, "Facebook": 11}
+      },
+      "first_source_of_information": {
+        "Media Cetak": {"cluster_1": 4, "cluster_4": 8},
+        "Televisi": {"cluster_1": 1, "cluster_4": 2},
+        "Internet": {"cluster_2": 52, "cluster_3": 24, "cluster_4": 11},
+        "Media Sosial": {"cluster_2": 15, "cluster_3": 7, "cluster_4": 3},
+        "Informasi dari Teman/Keluarga": {"cluster_2": 11, "cluster_3": 3, "cluster_4": 1}
+      }
+    },
+    "information_evaluation": {
+      "searching_for_additional_information": {
+        "Tidak Pernah": {"cluster_1": 5, "cluster_2": 11, "cluster_3": 2, "cluster_4": 1},
+        "Jarang": {"cluster_1": 6, "cluster_2": 47, "cluster_3": 17, "cluster_4": 12},
+        "Sering": {"cluster_2": 19, "cluster_3": 13, "cluster_4": 9},
+        "Sangat Sering": {"cluster_2": 1, "cluster_3": 3, "cluster_4": 4}
+      },
+      "completeness_of_information": {
+        "Tidak Lengkap": {"cluster_1": 4, "cluster_2": 11, "cluster_3": 3, "cluster_4": 4},
+        "Lengkap": {"cluster_1": 5, "cluster_2": 60, "cluster_3": 27, "cluster_4": 20},
+        "Sangat Lengkap": {"cluster_2": 6, "cluster_3": 5, "cluster_4": 2}
+      }
+    },
+    "satisfaction": {
+      "Puas": 108,
+      "Sangat Puas": 24,
+      "Tidak Puas": 15,
+      "Sangat Tidak Puas": 3
+    }
+  }

@@ -42,6 +42,23 @@
 
     <!-- Main Container -->
     <div class="container my-5">
+        <!-- File Selector -->
+        <section class="mb-5">
+            <h2 class="text-center mb-4">Pilih Sumber Data</h2>
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <div class="card p-4">
+                        <label for="dataSelector" class="form-label">Pilih Sumber Data:</label>
+                        <select class="form-select" id="dataSelector">
+                            <option value="data1">Gunakan Data Preferensi</option>
+                            <option value="data2">Gunakan Data Studi Kasus</option>
+                            <option value="both">Gabungkan Kedua Data</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Cluster Distribution -->
         <section class="mb-5">
             <h2 class="text-center mb-4">Distribusi Klaster</h2>
@@ -76,6 +93,12 @@
                         <canvas id="occupationChart"></canvas>
                     </div>
                 </div>
+                <div class="col-md-6 mt-4">
+                    <div class="card p-4">
+                        <h5>Distribusi Pendidikan</h5>
+                        <canvas id="educationChart"></canvas>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -89,29 +112,26 @@
                         <canvas id="mediaFrequentChart"></canvas>
                     </div>
                 </div>
-                    <div class="row mt-4">
-                        <div class="col-md-4">
-                            <div class="card p-4">
-                                <h5>Media Cetak</h5>
-                                <canvas id="mediaCetakChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card p-4">
-                                <h5>Internet</h5>
-                                <canvas id="internetChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card p-4">
-                                <h5>Media Sosial</h5>
-                                <canvas id="mediaSosialChart"></canvas>
-                            </div>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card p-4">
+                            <h5>Media Cetak</h5>
+                            <canvas id="mediaCetakChart"></canvas>
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="card p-4">
+                            <h5>Internet</h5>
+                            <canvas id="internetChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card p-4">
+                            <h5>Media Sosial</h5>
+                            <canvas id="mediaSosialChart"></canvas>
+                        </div>
                     </div>
                 </div>
-                
             </div>
         </section>
 
@@ -126,326 +146,67 @@
                 </div>
             </div>
         </section>
+
+        <!-- Information Evaluation -->
+        <section class="mb-5">
+            <h2 class="text-center mb-4">Evaluasi Informasi</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card p-4">
+                        <h5>Mencari Informasi Tambahan</h5>
+                        <canvas id="searchingInfoChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card p-4">
+                        <h5>Kelengkapan Informasi</h5>
+                        <canvas id="completenessInfoChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
- <!-- Simulator Section -->
- <section id="simulator" class="py-5 bg-light">
-    <div class="container my-5">
-        <div class="card shadow-lg">
-            <div class="card-body">
-                <h2 class="text-center mb-4">Simulator Rekomendasi Media</h2>
-                
-                <!-- Input Form -->
-                <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <label class="form-label">Usia</label>
-                        <input type="number" class="form-control" id="inputAge" min="18" max="100" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Pekerjaan</label>
-                        <select class="form-select" id="inputOccupation" required>
-                            <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
-                            <option value="Karyawan Swasta">Karyawan Swasta</option>
-                            <option value="Pegawai Negeri">Pegawai Negeri</option>
-                            <option value="Wirausaha">Wirausaha</option>
-                            <option value="Pekerjaan Lainnya">Pekerjaan Lainnya</option>
-                        </select>
-                    </div>
-                </div>
-    
-                <!-- Hasil Rekomendasi -->
-                <div id="recommendationResult" class="mt-4" style="display:none;">
-                    <h4 class="text-primary mb-3"><i class="fas fa-bullhorn me-2"></i>Media Terbaik untuk Anda:</h4>
-                    <div id="mediaRecommendations" class="row"></div>
-                </div>
-    
-                <button class="btn btn-primary w-100 py-2" onclick="generateRecommendation()">
-                    <i class="fas fa-magic me-2"></i>Dapatkan Rekomendasi
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <script>
-    function generateRecommendation() {
-        const userAge = parseInt(document.getElementById('inputAge').value);
-        const userOccupation = document.getElementById('inputOccupation').value;
-    
-        // Validasi input
-        if(!userAge || userAge < 18 || userAge > 100) {
-            alert("Mohon masukkan usia antara 18-100 tahun");
-            return;
-        }
-    
-        fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-                const bestCluster = calculateBestCluster(userAge, userOccupation, data);
-                const recommendations = getMediaRecommendations(bestCluster, data);
-                displayRecommendations(recommendations);
-            });
-    }
-    
-    function calculateBestCluster(age, occupation, data) {
-        // 1. Cari distribusi usia
-        let ageCluster = {};
-        for(const [range, clusters] of Object.entries(data.demographics.age_distribution)) {
-            const [min, max] = range.split('-').map(Number);
-            if(age >= min && age <= max) {
-                ageCluster = clusters;
-                break;
-            }
-        }
-    
-        // 2. Cari distribusi pekerjaan
-        const occupationCluster = data.demographics.occupation_distribution[occupation] || {};
-    
-        // 3. Hitung skor gabungan
-        const clusterScores = data.clusters.map(cluster => {
-            const clusterId = cluster.id;
-            const ageScore = ageCluster[`cluster_${clusterId}`] || 0;
-            const occupationScore = occupationCluster[`cluster_${clusterId}`] || 0;
-            
-            return {
-                clusterId,
-                totalScore: ageScore + occupationScore
-            };
-        });
-    
-        // 4. Ambil cluster dengan skor tertinggi
-        return clusterScores.reduce((a, b) => a.totalScore > b.totalScore ? a : b).clusterId;
-    }
-    
-    function getMediaRecommendations(clusterId, data) {
-        const clusterData = data.clusters.find(c => c.id === clusterId);
-        const mediaData = data.media_preferences.frequent_media;
-        
-        // Hitung persentase preferensi media
-        return Object.entries(mediaData)
-            .filter(([_, clusters]) => clusters[`cluster_${clusterId}`])
-            .map(([media, clusters]) => {
-                const count = clusters[`cluster_${clusterId}`];
-                const percentage = ((count / clusterData.cases) * 100).toFixed(1);
-                return { media, percentage };
-            })
-            .sort((a, b) => b.percentage - a.percentage);
-    }
-    
-    function displayRecommendations(recommendations) {
-        const container = document.getElementById('mediaRecommendations');
-        container.innerHTML = '';
-        
-        recommendations.forEach((rec, index) => {
-            const badgeColor = index === 0 ? 'bg-primary' : 'bg-secondary';
-            const card = `
-                <div class="col-md-6 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0">
-                                    <span class="badge ${badgeColor} rounded-pill me-2">${index + 1}</span>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h5 class="mb-0">${rec.media}</h5>
-                                    <small class="text-muted">${rec.percentage}% pengguna di klaster ini</small>
-                                </div>
-                            </div>
+    <!-- Simulator Section -->
+    <section id="simulator" class="py-5 bg-light">
+        <div class="container my-5">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Simulator Rekomendasi Media</h2>
+
+                    <!-- Input Form -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Usia</label>
+                            <input type="number" class="form-control" id="inputAge" min="18" max="100" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Pekerjaan</label>
+                            <select class="form-select" id="inputOccupation" required>
+                                <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
+                                <option value="Karyawan Swasta">Karyawan Swasta</option>
+                                <option value="Pegawai Negeri">Pegawai Negeri</option>
+                                <option value="Wirausaha">Wirausaha</option>
+                                <option value="Pekerjaan Lainnya">Pekerjaan Lainnya</option>
+                            </select>
                         </div>
                     </div>
-                </div>`;
-            container.innerHTML += card;
-        });
-    
-        document.getElementById('recommendationResult').style.display = 'block';
-    }
-    </script>
-    
-    <script>
-        fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-                // Update total respondents
-                document.getElementById('totalRespondents').textContent = 
-                    data.clusters.reduce((sum, cluster) => sum + cluster.cases, 0);
-    
-                // Initialize all charts
-                initClusterChart(data);
-                initAgeChart(data);
-                initOccupationChart(data);
-                initMediaCharts(data);
-                initSatisfactionChart(data);
-            });
-    
-        function initClusterChart(data) {
-            new Chart(document.getElementById('clusterChart'), {
-                type: 'pie',
-                data: {
-                    labels: data.clusters.map(c => `Klaster ${c.id} (${c.percentage}%)`),
-                    datasets: [{
-                        data: data.clusters.map(c => c.cases),
-                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'],
-                        hoverOffset: 10
-                    }]
-                }
-            });
-        }
-    
-        function initAgeChart(data) {
-            const ageData = data.demographics.age_distribution;
-            new Chart(document.getElementById('ageChart'), {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(ageData),
-                    datasets: [
-                        {
-                            label: 'Klaster 1',
-                            data: Object.values(ageData).map(d => d.cluster_1),
-                            backgroundColor: '#4e73df'
-                        },
-                        {
-                            label: 'Klaster 2',
-                            data: Object.values(ageData).map(d => d.cluster_2),
-                            backgroundColor: '#1cc88a'
-                        },
-                        {
-                            label: 'Klaster 3',
-                            data: Object.values(ageData).map(d => d.cluster_3),
-                            backgroundColor: '#36b9cc'
-                        },
-                        {
-                            label: 'Klaster 4',
-                            data: Object.values(ageData).map(d => d.cluster_4),
-                            backgroundColor: '#f6c23e'
-                        }
-                    ]
-                },
-                options: {
-                    scales: {
-                        x: { stacked: true },
-                        y: { stacked: true }
-                    }
-                }
-            });
-        }
-    
-        function initOccupationChart(data) {
-            const occupationData = data.demographics.occupation_distribution;
-            new Chart(document.getElementById('occupationChart'), {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(occupationData),
-                    datasets: [
-                        {
-                            label: 'Klaster 1',
-                            data: Object.values(occupationData).map(d => d.cluster_1 || 0),
-                            backgroundColor: '#4e73df'
-                        },
-                        {
-                            label: 'Klaster 2',
-                            data: Object.values(occupationData).map(d => d.cluster_2 || 0),
-                            backgroundColor: '#1cc88a'
-                        },
-                        {
-                            label: 'Klaster 3',
-                            data: Object.values(occupationData).map(d => d.cluster_3 || 0),
-                            backgroundColor: '#36b9cc'
-                        },
-                        {
-                            label: 'Klaster 4',
-                            data: Object.values(occupationData).map(d => d.cluster_4 || 0),
-                            backgroundColor: '#f6c23e'
-                        }
-                    ]
-                },
-                options: {
-                    scales: {
-                        x: { stacked: true },
-                        y: { stacked: true }
-                    }
-                }
-            });
-        }
-    
-        function initMediaCharts(data) {
-            // Frequent Media Chart
-            new Chart(document.getElementById('mediaFrequentChart'), {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(data.media_preferences.frequent_media),
-                    datasets: [
-                        {
-                            label: 'Klaster 1',
-                            data: Object.values(data.media_preferences.frequent_media).map(m => m.cluster_1 || 0),
-                            backgroundColor: '#4e73df'
-                        },
-                        {
-                            label: 'Klaster 3',
-                            data: Object.values(data.media_preferences.frequent_media).map(m => m.cluster_3 || 0),
-                            backgroundColor: '#36b9cc'
-                        },
-                        {
-                            label: 'Klaster 4',
-                            data: Object.values(data.media_preferences.frequent_media).map(m => m.cluster_4 || 0),
-                            backgroundColor: '#f6c23e'
-                        }
-                    ]
-                }
-            });
-    
-            // Media Types Charts
-            const mediaTypes = data.media_preferences.media_types;
-            
-            // Media Cetak
-            new Chart(document.getElementById('mediaCetakChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(mediaTypes['Media Cetak']),
-                    datasets: [{
-                        data: Object.values(mediaTypes['Media Cetak']),
-                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc']
-                    }]
-                }
-            });
-    
-            // Internet
-            new Chart(document.getElementById('internetChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(mediaTypes.Internet),
-                    datasets: [{
-                        data: Object.values(mediaTypes.Internet),
-                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc']
-                    }]
-                }
-            });
-    
-            // Media Sosial
-            new Chart(document.getElementById('mediaSosialChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(mediaTypes['Media Sosial']),
-                    datasets: [{
-                        data: Object.values(mediaTypes['Media Sosial']),
-                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc']
-                    }]
-                }
-            });
-        }
-    
-        function initSatisfactionChart(data) {
-            new Chart(document.getElementById('satisfactionChart'), {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(data.satisfaction),
-                    datasets: [{
-                        label: 'Jumlah Responden',
-                        data: Object.values(data.satisfaction),
-                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
-                    }]
-                }
-            });
-        }
-    </script>
+
+                    <!-- Hasil Rekomendasi -->
+                    <div id="recommendationResult" class="mt-4" style="display:none;">
+                        <h4 class="text-primary mb-3"><i class="fas fa-bullhorn me-2"></i>Media Terbaik untuk Anda:</h4>
+                        <div id="mediaRecommendations" class="row"></div>
+                    </div>
+
+                    <button class="btn btn-primary w-100 py-2" onclick="generateRecommendation()">
+                        <i class="fas fa-magic me-2"></i>Dapatkan Rekomendasi
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
