@@ -10,9 +10,7 @@ function generateRecommendation() {
     }
 
     let fetchPromises = [];
-    if (dataSelector === "both") {
-        fetchPromises = [fetch('data1.json'), fetch('data2.json')];
-    } else if (dataSelector === "data1") {
+    if (dataSelector === "data1") {
         fetchPromises = [fetch('data1.json')];
     } else if (dataSelector === "data2") {
         fetchPromises = [fetch('data2.json')];
@@ -21,55 +19,12 @@ function generateRecommendation() {
     Promise.all(fetchPromises)
         .then(responses => Promise.all(responses.map(response => response.json())))
         .then(datasets => {
-            let combinedData;
-            if (dataSelector === "both") {
-                const data1 = datasets[0];
-                const data2 = datasets[1];
-                combinedData = combineData(data1, data2);
-            } else {
-                combinedData = datasets[0];
-            }
+            const combinedData = datasets[0];
 
             const bestCluster = calculateBestCluster(userAge, userOccupation, combinedData);
             const recommendations = getMediaRecommendations(bestCluster, combinedData);
             displayRecommendations(recommendations);
         });
-}
-
-function combineData(data1, data2) {
-    // Combine clusters
-    const combinedClusters = data1.clusters.concat(data2.clusters);
-
-    // Combine demographics
-    const combinedDemographics = {
-        age_distribution: { ...data1.demographics.age_distribution, ...data2.demographics.age_distribution },
-        occupation_distribution: { ...data1.demographics.occupation_distribution, ...data2.demographics.employment_distribution },
-        education_distribution: data2.demographics.education_distribution
-    };
-
-    // Combine media preferences
-    const combinedMediaPreferences = {
-        frequent_media: { ...data1.media_preferences.frequent_media, ...data2.media_preferences.frequent_media },
-        media_types: { ...data1.media_preferences.media_types, ...data2.media_preferences.media_types },
-        first_source_of_information: data2.media_preferences.first_source_of_information
-    };
-
-    // Combine satisfaction
-    const combinedSatisfaction = {
-        ...data1.satisfaction,
-        ...data2.satisfaction
-    };
-
-    // Combine information evaluation
-    const combinedInformationEvaluation = data2.information_evaluation;
-
-    return {
-        clusters: combinedClusters,
-        demographics: combinedDemographics,
-        media_preferences: combinedMediaPreferences,
-        satisfaction: combinedSatisfaction,
-        information_evaluation: combinedInformationEvaluation
-    };
 }
 
 function calculateBestCluster(age, occupation, data) {
@@ -149,9 +104,7 @@ document.getElementById('dataSelector').addEventListener('change', function() {
     const dataSelector = document.getElementById('dataSelector').value;
     let fetchPromises = [];
 
-    if (dataSelector === "both") {
-        fetchPromises = [fetch('data1.json'), fetch('data2.json')];
-    } else if (dataSelector === "data1") {
+    if (dataSelector === "data1") {
         fetchPromises = [fetch('data1.json')];
     } else if (dataSelector === "data2") {
         fetchPromises = [fetch('data2.json')];
@@ -160,14 +113,7 @@ document.getElementById('dataSelector').addEventListener('change', function() {
     Promise.all(fetchPromises)
         .then(responses => Promise.all(responses.map(response => response.json())))
         .then(datasets => {
-            let combinedData;
-            if (dataSelector === "both") {
-                const data1 = datasets[0];
-                const data2 = datasets[1];
-                combinedData = combineData(data1, data2);
-            } else {
-                combinedData = datasets[0];
-            }
+            const combinedData = datasets[0];
 
             // Update total respondents
             document.getElementById('totalRespondents').textContent =
@@ -207,22 +153,22 @@ function initAgeChart(data) {
             datasets: [
                 {
                     label: 'Klaster 1',
-                    data: Object.values(ageData).map(d => d.cluster_1),
+                    data: Object.values(ageData).map(d => d.cluster_1 || 0),
                     backgroundColor: '#4e73df'
                 },
                 {
                     label: 'Klaster 2',
-                    data: Object.values(ageData).map(d => d.cluster_2),
+                    data: Object.values(ageData).map(d => d.cluster_2 || 0),
                     backgroundColor: '#1cc88a'
                 },
                 {
                     label: 'Klaster 3',
-                    data: Object.values(ageData).map(d => d.cluster_3),
+                    data: Object.values(ageData).map(d => d.cluster_3 || 0),
                     backgroundColor: '#36b9cc'
                 },
                 {
                     label: 'Klaster 4',
-                    data: Object.values(ageData).map(d => d.cluster_4),
+                    data: Object.values(ageData).map(d => d.cluster_4 || 0),
                     backgroundColor: '#f6c23e'
                 }
             ]
