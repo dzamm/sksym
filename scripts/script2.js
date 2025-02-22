@@ -29,7 +29,7 @@ function calculateBestCluster(age, occupation, data) {
     }
 
     // 2. Cari distribusi pekerjaan
-    const occupationCluster = data.demographics.occupation_distribution[occupation] || {};
+    const occupationCluster = data.demographics.employment_distribution[occupation] || {};
 
     // 3. Hitung skor gabungan
     const clusterScores = data.clusters.map(cluster => {
@@ -44,7 +44,7 @@ function calculateBestCluster(age, occupation, data) {
     });
 
     // 4. Ambil cluster dengan skor tertinggi
-    return clusterScores.reduce((a, b) => a.totalScore > b.totalScore ? a : b).clusterId;
+    return clusterScores.reduce((a, b) => (a.totalScore > b.totalScore ? a : b)).clusterId;
 }
 
 function getMediaRecommendations(clusterId, data) {
@@ -59,7 +59,8 @@ function getMediaRecommendations(clusterId, data) {
             const percentage = ((count / clusterData.cases) * 100).toFixed(1);
             return { media, percentage };
         })
-        .sort((a, b) => b.percentage - a.percentage);
+        .sort((a, b) => b.percentage - a.percentage)
+        .slice(0, 2); // Batasi hasil rekomendasi sampai 2
 }
 
 function displayRecommendations(recommendations) {
