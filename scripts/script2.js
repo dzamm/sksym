@@ -8,7 +8,7 @@ function generateRecommendation() {
         return;
     }
 
-    fetch('data/data2.json')
+    fetch('data2.json')
         .then(response => response.json())
         .then(data => {
             const bestCluster = calculateBestCluster(userAge, userOccupation, data);
